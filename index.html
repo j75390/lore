@@ -3,7 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>LORE</title>
+<title>LORE — AI 캐릭터와 이어 가는 이야기</title>
+<meta name="description" content="헌책방 사서, 경성 탐정, 300살 여우... 오리지널 AI 캐릭터와 1:1로 이야기를 나누는 LORE. 캐릭터가 먼저 말을 걸고, 나눈 이야기를 기억해요.">
+<meta name="theme-color" content="#0f0d11">
+<link rel="icon" type="image/png" sizes="64x64" href="static/brand/favicon-64.png">
+<link rel="apple-touch-icon" href="static/brand/icon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LORE — AI 캐릭터와 이어 가는 이야기">
+<meta property="og:description" content="오리지널 AI 캐릭터 12명과 1:1 롤플레이. 캐릭터가 먼저 말을 걸고, 나눈 이야기를 기억해요.">
+<meta property="og:image" content="https://lorechat.kro.kr/static/brand/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&family=Cinzel:wght@600;700&display=swap">
 <style>
@@ -32,8 +41,10 @@ img{display:block}
 /* 상단 바 */
 .top{position:fixed;inset:0 0 auto 0;height:var(--top);display:flex;align-items:center;gap:16px;padding:0 20px;background:rgba(15,13,17,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);z-index:30}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo svg{width:26px;height:26px}
-.logo b{font:700 22px var(--font-logo);letter-spacing:.22em}
+.logo .mark{width:34px;height:34px;border-radius:10px;box-shadow:0 0 0 1px rgba(242,179,102,.25),0 4px 18px rgba(242,179,102,.18)}
+.logo .word{display:flex;flex-direction:column;line-height:1}
+.logo b{font:700 21px var(--font-logo);letter-spacing:.24em;background:linear-gradient(100deg,#ffd9a3,var(--accent) 45%,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo small{font-size:9.5px;letter-spacing:.32em;color:var(--faint);margin-top:4px;padding-left:2px}
 .search{flex:1;max-width:520px;margin-left:24px;position:relative}
 .search input{width:100%;height:38px;border-radius:999px;border:1px solid var(--line);background:var(--panel);padding:0 16px 0 40px;color:var(--ink)}
 .search svg{position:absolute;left:14px;top:11px;width:16px;height:16px;color:var(--faint)}
@@ -49,7 +60,9 @@ img{display:block}
 .rail a{width:58px;padding:9px 0 7px;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--faint);text-decoration:none;font-size:11px}
 .rail a svg{width:22px;height:22px}
 .rail a:hover{color:var(--ink);background:var(--panel)}
+.rail a{position:relative}
 .rail a[aria-current="page"]{color:var(--accent);background:var(--panel)}
+.rail a[aria-current="page"]::before{content:"";position:absolute;left:-9px;top:12px;bottom:12px;width:3px;border-radius:3px;background:linear-gradient(var(--accent),var(--accent2))}
 main{padding:var(--top) 0 0 var(--railw);min-height:100%}
 .wrap{max-width:1180px;margin:0 auto;padding:22px 28px 56px}
 
@@ -94,6 +107,9 @@ main{padding:var(--top) 0 0 var(--railw);min-height:100%}
 .thumb{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:var(--panel)}
 .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .35s}
 .card:hover .thumb img{transform:scale(1.05)}
+.thumb{box-shadow:0 0 0 1px rgba(255,255,255,.04)}
+.card:hover .thumb{box-shadow:0 0 0 1px rgba(242,179,102,.35),0 10px 30px rgba(0,0,0,.45)}
+.card:focus-visible .thumb{outline:2px solid var(--accent);outline-offset:2px}
 .thumb::after{content:"";position:absolute;inset:55% 0 0 0;background:linear-gradient(transparent,rgba(0,0,0,.75))}
 .thumb .rank{position:absolute;left:10px;bottom:4px;font:700 40px/1 var(--font-logo);color:#fff;z-index:1;text-shadow:0 2px 12px rgba(0,0,0,.6)}
 .thumb .st{position:absolute;right:8px;bottom:8px;z-index:1;display:flex;gap:6px;font:600 11px var(--font-mono);color:#fff}
@@ -249,6 +265,16 @@ td.mono{font-family:var(--font-mono)}
 .offline{position:fixed;left:0;right:0;top:var(--top);z-index:25;background:#3a3220;color:#f6e3b0;font-size:13px;padding:8px 20px;text-align:center}
 body.is-offline main{padding-top:calc(var(--top) + 36px)}
 body.is-offline .chat{top:calc(var(--top) + 36px)}
+.rest{position:relative;border-radius:22px;overflow:hidden;margin-bottom:22px;min-height:220px;display:flex;align-items:flex-end}
+.rest > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rest::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,8,12,.92),rgba(10,8,12,.35) 60%,rgba(10,8,12,.1))}
+.rest > div{position:relative;z-index:1;padding:32px 40px;max-width:560px}
+.rest .kick{color:#9fc3ff;font-size:12px;letter-spacing:.12em;font-weight:700}
+.rest h2{font:700 26px/1.35 var(--font-story);margin:6px 0 8px}.rest p{margin:0;color:#d8cfd6}
+/* 로딩 */
+.skel{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:16px;padding:22px 28px}
+.skel i{aspect-ratio:3/4;border-radius:14px;background:linear-gradient(100deg,var(--panel) 30%,var(--panel2) 50%,var(--panel) 70%);background-size:300% 100%;animation:sh 1.3s infinite linear}
+@keyframes sh{to{background-position:-150% 0}}
 /* 회원 */
 .top .userbox{display:flex;gap:8px;align-items:center}
 .ubtn{display:flex;gap:8px;align-items:center;text-decoration:none;padding:4px 10px 4px 4px;border-radius:999px;border:1px solid var(--line);background:var(--panel)}
@@ -256,9 +282,18 @@ body.is-offline .chat{top:calc(var(--top) + 36px)}
 .me-av{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(140deg,var(--accent),var(--accent2));color:#24180b;font:700 28px var(--font-story);flex:none}
 .me-av.sm{width:30px;height:30px;font-size:14px}
 .owner-badge{font-size:11px;color:var(--good);border:1px solid #2f5a3d;background:#16251b;border-radius:999px;padding:3px 9px;white-space:nowrap}
-.auth-wrap{display:flex;justify-content:center}
+.auth-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);min-height:calc(100vh - var(--top))}
+.auth-art{position:sticky;top:var(--top);height:calc(100vh - var(--top));overflow:hidden}
+.auth-art > img{width:100%;height:100%;object-fit:cover}
+.auth-art::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,13,17,.95) 0%,rgba(15,13,17,.2) 45%,rgba(15,13,17,0) 70%),linear-gradient(90deg,rgba(15,13,17,0) 70%,var(--bg))}
+.art-cap{position:absolute;left:48px;bottom:48px;right:48px;z-index:1}
+.art-cap img{border-radius:12px;margin-bottom:12px}
+.art-cap b{display:block;font:700 34px var(--font-logo);letter-spacing:.24em;color:#ffe2b8}
+.art-cap p{margin:8px 0 0;color:#d8cfd6;font:17px/1.7 var(--font-story)}
+.auth-split .auth{margin:0 auto;padding:40px 32px 60px}
 .auth{width:100%;max-width:440px;padding:20px 0 40px}
-.auth-logo{display:block;text-align:center;font:700 26px var(--font-logo);letter-spacing:.22em;text-decoration:none;color:var(--accent);margin-bottom:18px}
+.auth-logo{display:flex;flex-direction:column;align-items:center;gap:8px;font:700 22px var(--font-logo);letter-spacing:.24em;text-decoration:none;color:var(--accent);margin-bottom:18px}
+.auth-logo img{border-radius:12px}
 .auth h1{font:700 26px var(--font-story);text-align:center;margin:0}
 .auth .sub{color:var(--muted);text-align:center;margin:6px 0 22px}
 .auth-form{display:flex;flex-direction:column;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}
@@ -309,15 +344,18 @@ body.is-offline .chat{top:calc(var(--top) + 36px)}
 .doc h3{font:700 17px var(--font-story);margin:22px 0 6px}.doc p{color:#d8cfd6;margin:0}
 .foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);color:var(--faint);font-size:12px;display:flex;gap:14px;flex-wrap:wrap}
 .foot a{color:var(--muted)}
+.foot{flex-direction:column;gap:10px}.foot nav{display:flex;gap:16px;flex-wrap:wrap}.foot p{margin:0}
+.foot-brand{display:flex;align-items:center;gap:10px}.foot-brand img{border-radius:8px}
+.foot-brand b{font:700 15px var(--font-logo);letter-spacing:.2em;color:var(--accent)}.foot-brand span{color:var(--faint)}
 .quota-hint b{color:var(--accent)}
-@media (max-width:860px){.me-stats{grid-template-columns:repeat(2,1fr)}.quota{grid-column:1/-1}.uname{display:none}.top .userbox .btn{padding:7px 10px;font-size:13px}.owner-badge{display:none}}
+@media (max-width:860px){.auth-split{grid-template-columns:minmax(0,1fr)}.auth-art{display:none}.logo small{display:none}.logo .mark{width:30px;height:30px}.rest > div{padding:22px}.rest h2{font-size:20px}.me-stats{grid-template-columns:repeat(2,1fr)}.quota{grid-column:1/-1}.uname{display:none}.top .userbox .btn{padding:7px 10px;font-size:13px}.owner-badge{display:none}}
 </style>
 </head>
 <body>
 <header class="top">
   <a class="logo" href="#home" aria-label="LORE 홈">
-    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 5h14l6 6v16H6z" fill="none" stroke="#f2b366" stroke-width="2"/><path d="M10 13h12M10 18h12M10 23h7" stroke="#ff8f6b" stroke-width="2" stroke-linecap="round"/></svg>
-    <b>LORE</b>
+    <img class="mark" src="static/brand/mark.png" alt="" width="34" height="34">
+    <span class="word"><b>LORE</b><small>AI 캐릭터 이야기</small></span>
   </a>
   <form class="search" id="searchForm" role="search">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -335,7 +373,7 @@ body.is-offline .chat{top:calc(var(--top) + 36px)}
   <a href="#create" data-nav="create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>만들기</a>
   <a href="#status" data-nav="status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>서버</a>
 </nav>
-<main id="main"></main>
+<main id="main"><div class="skel" aria-label="불러오는 중"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
 <script>
@@ -443,6 +481,8 @@ async function viewHome() {
   const seen = new Set();
   const latestConvs = convs.filter((v) => !seen.has(v.character.id) && seen.add(v.character.id)).slice(0, 4);
   $('#main').innerHTML = `<div class="wrap">
+    ${OFFLINE ? `<section class="rest"><img src="static/brand/offline.jpg" alt=""><div><span class="kick">잠시 쉬는 중</span>
+      <h2>오늘 밤 서버 PC는 잠들어 있어요</h2><p>LORE는 운영자의 PC 한 대에서 AI가 직접 답을 만들어요. PC가 깨어나면 대화와 로그인이 다시 열려요. 그동안 캐릭터들을 둘러보세요.</p></div></section>` : ''}
     ${featured.length ? `<section class="hero" aria-roledescription="carousel" aria-label="추천 이야기">
       ${featured.map((c, i) => `<div class="slide${i ? '' : ' on'}" aria-hidden="${i ? 'true' : 'false'}">
         <img src="${esc(withBase(c.banner || c.image))}" class="${c.banner ? '' : 'tall'}" alt="" ${i ? 'loading="lazy"' : ''}>
@@ -463,7 +503,9 @@ async function viewHome() {
     }).join('')}
     <section class="sec"><div class="sec-h"><h3>내가 만든 캐릭터</h3><a href="#create">새로 만들기 ›</a></div>
       <div class="row">${mine.map((c) => card(c)).join('')}${newCard()}</div></section>
-    <footer class="foot"><span>LORE · 개인 포트폴리오 서비스</span><a href="#terms">이용약관</a><a href="#privacy"><b>개인정보 처리방침</b></a><a href="#status">서버 상태</a><span>캐릭터 답은 AI가 만든 허구예요</span></footer>
+    <footer class="foot"><div class="foot-brand"><img src="static/brand/mark.png" alt="" width="28" height="28"><b>LORE</b><span>AI 캐릭터와 이어 가는 이야기</span></div>
+      <nav><a href="#terms">이용약관</a><a href="#privacy"><b>개인정보 처리방침</b></a><a href="#status">서버 상태</a></nav>
+      <p>캐릭터의 답은 AI가 만든 허구예요. 캐릭터와 그림은 모두 LORE 오리지널이에요. · 개인 포트폴리오 서비스 © 2026</p></footer>
   </div>`;
   startHero(featured.length);
 }
@@ -844,9 +886,12 @@ function afterLogin() {
   location.hash = next === '#login' || next === '#signup' ? '#home' : next;
 }
 function authShell(title, sub, body) {
-  return `<div class="wrap auth-wrap"><div class="auth">
-    <a class="auth-logo" href="#home">LORE</a>
-    <h1>${title}</h1>${sub ? `<p class="sub">${sub}</p>` : ''}${body}</div></div>`;
+  return `<div class="auth-split">
+    <aside class="auth-art" aria-hidden="true"><img src="static/brand/auth.jpg" alt="">
+      <div class="art-cap"><img src="static/brand/mark.png" alt="" width="44" height="44"><b>LORE</b>
+        <p>문을 열면, 캐릭터가 먼저 말을 걸어요.<br>나눈 이야기는 다음에도 이어져요.</p></div></aside>
+    <div class="auth"><a class="auth-logo" href="#home"><img src="static/brand/mark.png" alt="" width="40" height="40"><span>LORE</span></a>
+      <h1>${title}</h1>${sub ? `<p class="sub">${sub}</p>` : ''}${body}</div></div>`;
 }
 function fieldErr(id, msg) { const el = $(`#${id}`); if (el) { el.className = 'err-text'; el.textContent = msg || ''; } }
 
