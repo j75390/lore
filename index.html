@@ -966,7 +966,7 @@ function viewForgot() {
     e.preventDefault();
     const email = $('#f-email').value.trim();
     if (!email) return ($('#ferr2').textContent = '이메일을 적어 주세요.');
-    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/' });
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
     if (error) return ($('#ferr2').textContent = authMsg(error));
     $('#ff').innerHTML = '<p class="ok-text" style="font-size:15px">메일을 보냈어요. 메일의 링크를 누르면 새 비밀번호를 정하는 화면이 열려요.</p>';
   });
