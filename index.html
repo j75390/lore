@@ -352,12 +352,14 @@ const ago = (ts) => {
   return s < 60 ? '방금' : s < 3600 ? `${Math.floor(s / 60)}분 전` : s < 86400 ? `${Math.floor(s / 3600)}시간 전` : `${Math.floor(s / 86400)}일 전`;
 };
 // 공개 화면(GitHub Pages)에서는 api.json이 지금 켜진 서버 주소를 알려 준다. PC 서버에서 직접 열면 같은 주소를 쓴다.
-let API_BASE = '', OFFLINE = false, SNAPSHOT = [];
-const withBase = (u) => (u && u.startsWith('/media/') ? API_BASE + u : u);
+let API_BASE = '', OFFLINE = false, SNAPSHOT = [], ON_PAGES = false;
+// 회원 그림(/media)은 서버에서, 기본 그림(/static)은 화면과 같은 곳에서. GitHub Pages 하위 주소(/lore/)에서도 되게 상대 경로로.
+const withBase = (u) => (!u ? u : u.startsWith('/media/') ? API_BASE + u : ON_PAGES && u.startsWith('/static/') ? u.slice(1) : u);
 async function initBase() {
   let cfg = null;
   try { const r = await fetch('api.json', { cache: 'no-store' }); if (r.ok) cfg = await r.json(); } catch {}
   if (!cfg) return;                                   // PC 서버에서 직접 연 경우
+  ON_PAGES = true;
   API_BASE = (cfg.api || '').replace(/\/$/, '');
   let alive = false;
   if (API_BASE) {
@@ -443,7 +445,7 @@ async function viewHome() {
   $('#main').innerHTML = `<div class="wrap">
     ${featured.length ? `<section class="hero" aria-roledescription="carousel" aria-label="추천 이야기">
       ${featured.map((c, i) => `<div class="slide${i ? '' : ' on'}" aria-hidden="${i ? 'true' : 'false'}">
-        <img src="${esc(c.banner || c.image)}" class="${c.banner ? '' : 'tall'}" alt="" ${i ? 'loading="lazy"' : ''}>
+        <img src="${esc(withBase(c.banner || c.image))}" class="${c.banner ? '' : 'tall'}" alt="" ${i ? 'loading="lazy"' : ''}>
         <div class="cap"><span class="kick">${esc(c.name)} · ${c.tags.map((t) => '#' + esc(t)).join(' ')}</span>
           <h2>${esc(c.title || c.tagline)}</h2><p>${esc(c.tagline)}</p>
           <a class="btn primary lg" href="#c-${esc(c.id)}" tabindex="${i ? -1 : 0}">이야기 보기</a></div></div>`).join('')}
